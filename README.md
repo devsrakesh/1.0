@@ -1154,3 +1154,142 @@ print(deque)  # []
 Each of these implementations supports common deque operations such as adding/removing elements from both ends.
 
 ### 9 Priority Queue
+
+Here's a Python program to perform the requested operations on a **binary search tree (BST)**:
+
+---
+
+### Binary Search Tree Implementation
+
+```python
+class Node:
+    """A node in the binary search tree."""
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+class BinarySearchTree:
+    """Binary search tree class."""
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        """Insert a key into the BST."""
+        self.root = self._insert(self.root, key)
+
+    def _insert(self, root, key):
+        if root is None:
+            return Node(key)
+        if key < root.key:
+            root.left = self._insert(root.left, key)
+        else:
+            root.right = self._insert(root.right, key)
+        return root
+
+    def search(self, key):
+        """Search for a key in the BST. Returns True if found, otherwise False."""
+        return self._search(self.root, key)
+
+    def _search(self, root, key):
+        if root is None:
+            return False
+        if root.key == key:
+            return True
+        if key < root.key:
+            return self._search(root.left, key)
+        return self._search(root.right, key)
+
+    def delete(self, key):
+        """Delete a key from the BST."""
+        self.root = self._delete(self.root, key)
+
+    def _delete(self, root, key):
+        if root is None:
+            return root
+        if key < root.key:
+            root.left = self._delete(root.left, key)
+        elif key > root.key:
+            root.right = self._delete(root.right, key)
+        else:
+            # Node with only one child or no child
+            if root.left is None:
+                return root.right
+            elif root.right is None:
+                return root.left
+
+            # Node with two children: Get the inorder successor
+            min_larger_node = self._get_min(root.right)
+            root.key = min_larger_node.key
+            root.right = self._delete(root.right, min_larger_node.key)
+
+        return root
+
+    def _get_min(self, root):
+        """Get the node with the smallest key in the subtree."""
+        while root.left is not None:
+            root = root.left
+        return root
+
+    def inorder_traversal(self):
+        """Perform inorder traversal of the BST."""
+        return self._inorder_traversal(self.root, [])
+
+    def _inorder_traversal(self, root, result):
+        if root is not None:
+            self._inorder_traversal(root.left, result)
+            result.append(root.key)
+            self._inorder_traversal(root.right, result)
+        return result
+
+
+# Example Usage
+bst = BinarySearchTree()
+
+# (a) Construct the BST
+elements = [50, 30, 70, 20, 40, 60, 80]
+for el in elements:
+    bst.insert(el)
+
+print("Inorder Traversal of BST:", bst.inorder_traversal())  # [20, 30, 40, 50, 60, 70, 80]
+
+# (b) Search for a key
+key_to_search = 40
+print(f"Is {key_to_search} in BST?", bst.search(key_to_search))  # True
+
+# (c) Delete an element
+key_to_delete = 50
+bst.delete(key_to_delete)
+print(f"Inorder Traversal after deleting {key_to_delete}:", bst.inorder_traversal())  # [20, 30, 40, 60, 70, 80]
+```
+
+---
+
+### Explanation:
+
+1. **Insertion (`insert` Method)**:
+   - New nodes are inserted based on their value. Values smaller than the current node are placed in the left subtree, and larger values go to the right subtree.
+
+2. **Searching (`search` Method)**:
+   - Recursively checks the left or right subtree based on the key value until the key is found or the subtree is empty.
+
+3. **Deletion (`delete` Method)**:
+   - Deletes a node based on three cases:
+     - Node has no children: Simply remove the node.
+     - Node has one child: Replace the node with its child.
+     - Node has two children: Replace the node with its inorder successor (smallest value in the right subtree).
+
+4. **Traversal (`inorder_traversal` Method)**:
+   - An inorder traversal ensures the elements are printed in sorted order.
+
+---
+
+### Example Output:
+
+```
+Inorder Traversal of BST: [20, 30, 40, 50, 60, 70, 80]
+Is 40 in BST? True
+Inorder Traversal after deleting 50: [20, 30, 40, 60, 70, 80]
+```
+
+This program covers constructing a BST, searching for an element, and deleting an element effectively.
