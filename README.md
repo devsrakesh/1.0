@@ -932,4 +932,224 @@ Front element is: 20
 
 These programs implement stack and queue ADTs using a singly linked list, demonstrating the basic operations of both data structures.
 
+### 8 Deque
+
+Here are Python programs implementing the deque (double-ended queue) ADT using the following approaches:
+
+### 1. **Deque Implementation Using Array**
+```python
+class ArrayDeque:
+    def __init__(self):
+        self.data = []
+
+    def is_empty(self):
+        return len(self.data) == 0
+
+    def add_first(self, item):
+        self.data.insert(0, item)
+
+    def add_last(self, item):
+        self.data.append(item)
+
+    def remove_first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.data.pop(0)
+
+    def remove_last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.data.pop()
+
+    def first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.data[0]
+
+    def last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.data[-1]
+
+    def __str__(self):
+        return str(self.data)
+
+
+# Example usage:
+deque = ArrayDeque()
+deque.add_first(10)
+deque.add_last(20)
+print(deque)  # [10, 20]
+deque.remove_first()
+print(deque)  # [20]
+deque.remove_last()
+print(deque)  # []
+```
+
+### 2. **Deque Implementation Using Singly Linked List**
+```python
+class Node:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+class SinglyLinkedListDeque:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def is_empty(self):
+        return self.head is None
+
+    def add_first(self, item):
+        new_node = Node(item, self.head)
+        if self.is_empty():
+            self.tail = new_node
+        self.head = new_node
+
+    def add_last(self, item):
+        new_node = Node(item)
+        if self.is_empty():
+            self.head = new_node
+        else:
+            self.tail.next = new_node
+        self.tail = new_node
+
+    def remove_first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        value = self.head.value
+        self.head = self.head.next
+        if self.head is None:
+            self.tail = None
+        return value
+
+    def remove_last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        current = self.head
+        if current.next is None:  # Single element
+            value = current.value
+            self.head = self.tail = None
+            return value
+        while current.next != self.tail:
+            current = current.next
+        value = self.tail.value
+        self.tail = current
+        self.tail.next = None
+        return value
+
+    def first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.head.value
+
+    def last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.tail.value
+
+    def __str__(self):
+        result, current = [], self.head
+        while current:
+            result.append(current.value)
+            current = current.next
+        return str(result)
+
+
+# Example usage:
+deque = SinglyLinkedListDeque()
+deque.add_first(10)
+deque.add_last(20)
+print(deque)  # [10, 20]
+deque.remove_first()
+print(deque)  # [20]
+deque.remove_last()
+print(deque)  # []
+```
+
+### 3. **Deque Implementation Using Doubly Linked List**
+```python
+class DNode:
+    def __init__(self, value, prev=None, next=None):
+        self.value = value
+        self.prev = prev
+        self.next = next
+
+class DoublyLinkedListDeque:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def is_empty(self):
+        return self.head is None
+
+    def add_first(self, item):
+        new_node = DNode(item, None, self.head)
+        if self.is_empty():
+            self.tail = new_node
+        else:
+            self.head.prev = new_node
+        self.head = new_node
+
+    def add_last(self, item):
+        new_node = DNode(item, self.tail, None)
+        if self.is_empty():
+            self.head = new_node
+        else:
+            self.tail.next = new_node
+        self.tail = new_node
+
+    def remove_first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        value = self.head.value
+        self.head = self.head.next
+        if self.head is None:
+            self.tail = None
+        else:
+            self.head.prev = None
+        return value
+
+    def remove_last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        value = self.tail.value
+        self.tail = self.tail.prev
+        if self.tail is None:
+            self.head = None
+        else:
+            self.tail.next = None
+        return value
+
+    def first(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.head.value
+
+    def last(self):
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.tail.value
+
+    def __str__(self):
+        result, current = [], self.head
+        while current:
+            result.append(current.value)
+            current = current.next
+        return str(result)
+
+
+# Example usage:
+deque = DoublyLinkedListDeque()
+deque.add_first(10)
+deque.add_last(20)
+print(deque)  # [10, 20]
+deque.remove_first()
+print(deque)  # [20]
+deque.remove_last()
+print(deque)  # []
+```
+
+Each of these implementations supports common deque operations such as adding/removing elements from both ends.
 
