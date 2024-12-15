@@ -1293,3 +1293,281 @@ Inorder Traversal after deleting 50: [20, 30, 40, 60, 70, 80]
 ```
 
 This program covers constructing a BST, searching for an element, and deleting an element effectively.
+
+
+
+Below is a Python program that implements a **dictionary ADT** using hashing. Python's built-in dictionary (`dict`) is itself based on a hash table, but we'll implement a custom hash table to mimic the behavior.
+
+---
+
+### Hash Table Implementation for Dictionary ADT
+
+```python
+class HashTable:
+    """A simple hash table implementation for the dictionary ADT."""
+    def __init__(self, size=10):
+        self.size = size
+        self.table = [[] for _ in range(size)]  # Each slot is a list for handling collisions (chaining)
+
+    def _hash(self, key):
+        """Compute a hash value for the given key."""
+        return hash(key) % self.size
+
+    def insert(self, key, value):
+        """Insert a key-value pair into the hash table."""
+        index = self._hash(key)
+        for pair in self.table[index]:
+            if pair[0] == key:
+                pair[1] = value  # Update value if the key already exists
+                return
+        self.table[index].append([key, value])
+
+    def get(self, key):
+        """Retrieve the value associated with the given key."""
+        index = self._hash(key)
+        for pair in self.table[index]:
+            if pair[0] == key:
+                return pair[1]
+        raise KeyError(f"Key '{key}' not found.")
+
+    def delete(self, key):
+        """Delete the key-value pair associated with the given key."""
+        index = self._hash(key)
+        for i, pair in enumerate(self.table[index]):
+            if pair[0] == key:
+                self.table[index].pop(i)
+                return
+        raise KeyError(f"Key '{key}' not found.")
+
+    def contains(self, key):
+        """Check if a key exists in the hash table."""
+        index = self._hash(key)
+        for pair in self.table[index]:
+            if pair[0] == key:
+                return True
+        return False
+
+    def keys(self):
+        """Return a list of all keys in the hash table."""
+        result = []
+        for bucket in self.table:
+            for pair in bucket:
+                result.append(pair[0])
+        return result
+
+    def values(self):
+        """Return a list of all values in the hash table."""
+        result = []
+        for bucket in self.table:
+            for pair in bucket:
+                result.append(pair[1])
+        return result
+
+    def items(self):
+        """Return a list of all key-value pairs in the hash table."""
+        result = []
+        for bucket in self.table:
+            for pair in bucket:
+                result.append(tuple(pair))
+        return result
+
+    def __str__(self):
+        """Return a string representation of the hash table."""
+        result = []
+        for i, bucket in enumerate(self.table):
+            result.append(f"Bucket {i}: {bucket}")
+        return "\n".join(result)
+
+
+# Example Usage
+ht = HashTable()
+
+# Insert key-value pairs
+ht.insert("name", "Alice")
+ht.insert("age", 30)
+ht.insert("city", "New York")
+
+print("Hash Table:")
+print(ht)
+
+# Retrieve a value
+print("\nGet value for 'name':", ht.get("name"))  # Alice
+
+# Check if a key exists
+print("Contains 'age'?", ht.contains("age"))  # True
+print("Contains 'gender'?", ht.contains("gender"))  # False
+
+# Delete a key
+ht.delete("age")
+print("\nAfter deleting 'age':")
+print(ht)
+
+# Get all keys, values, and items
+print("\nKeys:", ht.keys())  # ['name', 'city']
+print("Values:", ht.values())  # ['Alice', 'New York']
+print("Items:", ht.items())  # [('name', 'Alice'), ('city', 'New York')]
+```
+
+---
+
+### Explanation:
+
+1. **Hash Function (`_hash`)**:
+   - A simple hash function computes the index of the key using Python's `hash` function and the modulo operator with the table size.
+
+2. **Collision Handling**:
+   - **Chaining** is used to resolve collisions. Each slot in the hash table contains a list to store multiple key-value pairs that hash to the same index.
+
+3. **Supported Operations**:
+   - **`insert(key, value)`**: Adds a key-value pair to the hash table or updates the value if the key already exists.
+   - **`get(key)`**: Retrieves the value associated with a key.
+   - **`delete(key)`**: Removes a key-value pair by key.
+   - **`contains(key)`**: Checks if a key exists in the hash table.
+   - **`keys()`**, **`values()`**, **`items()`**: Return all keys, values, or key-value pairs in the hash table.
+
+4. **Time Complexity**:
+   - **Average case**:
+     - Insertion, search, and deletion: \( O(1) \) (due to efficient hashing).
+   - **Worst case**:
+     - \( O(n) \), if all keys collide and are stored in the same bucket (rare if a good hash function is used).
+
+5. **Example Output**:
+```
+Hash Table:
+Bucket 0: []
+Bucket 1: []
+Bucket 2: []
+Bucket 3: []
+Bucket 4: []
+Bucket 5: []
+Bucket 6: [['name', 'Alice']]
+Bucket 7: [['age', 30]]
+Bucket 8: []
+Bucket 9: [['city', 'New York']]
+
+Get value for 'name': Alice
+Contains 'age'? True
+Contains 'gender'? False
+
+After deleting 'age':
+Bucket 0: []
+Bucket 1: []
+Bucket 2: []
+Bucket 3: []
+Bucket 4: []
+Bucket 5: []
+Bucket 6: [['name', 'Alice']]
+Bucket 7: []
+Bucket 8: []
+Bucket 9: [['city', 'New York']]
+
+Keys: ['name', 'city']
+Values: ['Alice', 'New York']
+Items: [('name', 'Alice'), ('city', 'New York')]
+```
+
+This implementation covers all fundamental dictionary operations using a hash table and is a great example of the ADT in action!
+
+
+Here is the Python implementation of **Dijkstra's algorithm** for finding the single-source shortest path problem:
+
+---
+
+### **12. Python Program to Implement Dijkstra's Algorithm**
+
+```python
+import heapq
+
+def dijkstra(graph, source):
+    """
+    Dijkstra's algorithm to find the shortest path from source to all vertices.
+    :param graph: A dictionary where keys are vertices, and values are lists of tuples (neighbor, weight).
+    :param source: The starting vertex.
+    """
+    # Priority queue to store (distance, vertex)
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, source))
+
+    # Distance from source to each vertex
+    distances = {vertex: float('infinity') for vertex in graph}
+    distances[source] = 0
+
+    # Visited set to avoid revisiting nodes
+    visited = set()
+
+    while priority_queue:
+        # Get vertex with the smallest distance
+        current_distance, current_vertex = heapq.heappop(priority_queue)
+
+        if current_vertex in visited:
+            continue
+        visited.add(current_vertex)
+
+        # Update distances to neighbors
+        for neighbor, weight in graph[current_vertex]:
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    return distances
+
+
+# Example usage
+if __name__ == "__main__":
+    # Graph representation as adjacency list
+    graph = {
+        'A': [('B', 1), ('C', 4)],
+        'B': [('A', 1), ('C', 2), ('D', 6)],
+        'C': [('A', 4), ('B', 2), ('D', 3)],
+        'D': [('B', 6), ('C', 3)],
+    }
+
+    source_vertex = 'A'
+    shortest_distances = dijkstra(graph, source_vertex)
+
+    print(f"Shortest distances from vertex {source_vertex}:")
+    for vertex, distance in shortest_distances.items():
+        print(f"{vertex}: {distance}")
+```
+
+---
+
+### Explanation:
+
+1. **Graph Representation**:
+   - The graph is represented as an adjacency list where each vertex points to a list of tuples, representing the neighbor and the edge weight.
+
+2. **Priority Queue**:
+   - A min-heap (using Python's `heapq`) is used to efficiently fetch the next closest vertex to process.
+
+3. **Key Variables**:
+   - **`distances`**: Stores the shortest distance from the source to each vertex, initialized to infinity except for the source.
+   - **`visited`**: Keeps track of visited vertices to avoid redundant processing.
+
+4. **Steps**:
+   - Start from the source vertex.
+   - Relax all its neighbors, updating their shortest distance if a shorter path is found.
+   - Continue until all reachable vertices are processed.
+
+5. **Complexity**:
+   - **Time Complexity**: \(O((V + E) \log V)\), where \(V\) is the number of vertices and \(E\) is the number of edges.
+   - **Space Complexity**: \(O(V + E)\).
+
+---
+
+### Example Output:
+For the given graph and source vertex `'A'`:
+
+```
+Shortest distances from vertex A:
+A: 0
+B: 1
+C: 3
+D: 6
+```
+
+---
+
+This implementation is efficient and demonstrates Dijkstra's algorithm effectively. Let me know if you'd like to proceed with **binary tree traversal**!
