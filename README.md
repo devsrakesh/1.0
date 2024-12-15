@@ -1153,3 +1153,4 @@ print(deque)  # []
 
 Each of these implementations supports common deque operations such as adding/removing elements from both ends.
 
+### 9 Priority Queue
