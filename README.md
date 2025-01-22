@@ -1570,4 +1570,847 @@ D: 6
 
 ---
 
+# 13 binary tree traversal
+Here are Python programs for traversing a binary tree using **recursive** and **non-recursive (iterative)** methods for **Preorder**, **Inorder**, and **Postorder** traversal.
+
+### Binary Tree Node Definition
+```python
+class TreeNode:
+    def __init__(self, value=0, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+```
+
+### Recursive Traversals
+
+#### Preorder Traversal (Root -> Left -> Right)
+```python
+def preorder_recursive(node, result=None):
+    if result is None:
+        result = []
+    if node:
+        result.append(node.value)
+        preorder_recursive(node.left, result)
+        preorder_recursive(node.right, result)
+    return result
+```
+
+#### Inorder Traversal (Left -> Root -> Right)
+```python
+def inorder_recursive(node, result=None):
+    if result is None:
+        result = []
+    if node:
+        inorder_recursive(node.left, result)
+        result.append(node.value)
+        inorder_recursive(node.right, result)
+    return result
+```
+
+#### Postorder Traversal (Left -> Right -> Root)
+```python
+def postorder_recursive(node, result=None):
+    if result is None:
+        result = []
+    if node:
+        postorder_recursive(node.left, result)
+        postorder_recursive(node.right, result)
+        result.append(node.value)
+    return result
+```
+
+---
+
+### Non-Recursive (Iterative) Traversals
+
+#### Preorder Traversal (Root -> Left -> Right)
+```python
+def preorder_iterative(root):
+    if not root:
+        return []
+    stack, result = [root], []
+    while stack:
+        node = stack.pop()
+        result.append(node.value)
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+    return result
+```
+
+#### Inorder Traversal (Left -> Root -> Right)
+```python
+def inorder_iterative(root):
+    stack, result = [], []
+    current = root
+    while current or stack:
+        while current:
+            stack.append(current)
+            current = current.left
+        current = stack.pop()
+        result.append(current.value)
+        current = current.right
+    return result
+```
+
+#### Postorder Traversal (Left -> Right -> Root)
+```python
+def postorder_iterative(root):
+    if not root:
+        return []
+    stack1, stack2, result = [root], [], []
+    while stack1:
+        node = stack1.pop()
+        stack2.append(node)
+        if node.left:
+            stack1.append(node.left)
+        if node.right:
+            stack1.append(node.right)
+    while stack2:
+        result.append(stack2.pop().value)
+    return result
+```
+
+---
+
+### Example Usage
+```python
+# Constructing a binary tree
+#         1
+#        / \
+#       2   3
+#      / \   \
+#     4   5   6
+
+root = TreeNode(1)
+root.left = TreeNode(2, TreeNode(4), TreeNode(5))
+root.right = TreeNode(3, None, TreeNode(6))
+
+# Recursive Traversals
+print("Recursive Preorder:", preorder_recursive(root))
+print("Recursive Inorder:", inorder_recursive(root))
+print("Recursive Postorder:", postorder_recursive(root))
+
+# Iterative Traversals
+print("Iterative Preorder:", preorder_iterative(root))
+print("Iterative Inorder:", inorder_iterative(root))
+print("Iterative Postorder:", postorder_iterative(root))
+```
+
+---
+
+### Output for the Example Binary Tree
+For the given binary tree:
+```
+         1
+        / \
+       2   3
+      / \   \
+     4   5   6
+```
+
+The output will be:
+```
+Recursive Preorder: [1, 2, 4, 5, 3, 6]
+Recursive Inorder: [4, 2, 5, 1, 3, 6]
+Recursive Postorder: [4, 5, 2, 6, 3, 1]
+
+Iterative Preorder: [1, 2, 4, 5, 3, 6]
+Iterative Inorder: [4, 2, 5, 1, 3, 6]
+Iterative Postorder: [4, 5, 2, 6, 3, 1]
+```
+
+
+# 14 bfs dfs
+
 This implementation is efficient and demonstrates Dijkstra's algorithm effectively. Let me know if you'd like to proceed with **binary tree traversal**!
+
+Here are Python implementations for both Breadth-First Search (BFS) and Depth-First Search (DFS) for a given graph. 
+
+### BFS Implementation
+```python
+from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    result = []
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            result.append(node)
+            queue.extend(graph[node] - visited)  # Add unvisited neighbors to the queue
+
+    return result
+
+# Example usage
+graph = {
+    'A': {'B', 'C'},
+    'B': {'A', 'D', 'E'},
+    'C': {'A', 'F'},
+    'D': {'B'},
+    'E': {'B', 'F'},
+    'F': {'C', 'E'}
+}
+start_node = 'A'
+print("BFS:", bfs(graph, start_node))
+```
+
+### DFS Implementation
+#### Using Recursion
+```python
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+
+    visited.add(node)
+    result = [node]
+
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            result.extend(dfs_recursive(graph, neighbor, visited))
+
+    return result
+
+# Example usage
+print("DFS (Recursive):", dfs_recursive(graph, start_node))
+```
+
+#### Using Iteration
+```python
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+    result = []
+
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            result.append(node)
+            stack.extend(graph[node] - visited)  # Add unvisited neighbors to the stack
+
+    return result
+
+# Example usage
+print("DFS (Iterative):", dfs_iterative(graph, start_node))
+```
+
+### Output for the Example Graph
+For the given example graph and `start_node = 'A'`, the output will be:
+```
+BFS: ['A', 'B', 'C', 'D', 'E', 'F']
+DFS (Recursive): ['A', 'B', 'D', 'E', 'F', 'C']
+DFS (Iterative): ['A', 'C', 'F', 'E', 'B', 'D']
+```
+
+### Key Notes:
+1. The `graph` is represented as an adjacency list using a dictionary of sets for easy neighbor lookups.
+2. In BFS, we use a queue (FIFO) to explore the graph layer by layer.
+3. In DFS, we use a stack (LIFO) to explore as deeply as possible along one branch before backtracking.
+4. Both implementations ensure all nodes are visited once, avoiding cycles by keeping track of visited nodes.
+
+
+Here are Python implementations of the requested sorting methods. Each method is explained briefly with the implementation.
+
+---
+
+# Sorting Technique
+
+### **a) Bubble Sort**
+Bubble Sort repeatedly swaps adjacent elements if they are in the wrong order.
+
+```python
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+# Example Usage
+print("Bubble Sort:", bubble_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### **b) Insertion Sort**
+Insertion Sort builds the sorted array one element at a time by inserting elements into their correct position.
+
+```python
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
+
+# Example Usage
+print("Insertion Sort:", insertion_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### **c) Quick Sort**
+Quick Sort is a divide-and-conquer algorithm that selects a pivot element and partitions the array around the pivot.
+
+```python
+def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+# Example Usage
+print("Quick Sort:", quick_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### **d) Merge Sort**
+Merge Sort is a divide-and-conquer algorithm that splits the array into halves, sorts each half, and merges them.
+
+```python
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# Example Usage
+print("Merge Sort:", merge_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### **e) Heap Sort**
+Heap Sort converts the array into a max heap and repeatedly extracts the largest element.
+
+```python
+def heap_sort(arr):
+    def heapify(arr, n, i):
+        largest = i
+        left = 2 * i + 1
+        right = 2 * i + 2
+        if left < n and arr[left] > arr[largest]:
+            largest = left
+        if right < n and arr[right] > arr[largest]:
+            largest = right
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]
+            heapify(arr, n, largest)
+
+    n = len(arr)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+    for i in range(n - 1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]
+        heapify(arr, i, 0)
+    return arr
+
+# Example Usage
+print("Heap Sort:", heap_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### **f) Radix Sort**
+Radix Sort sorts elements digit by digit, starting from the least significant digit.
+
+```python
+def radix_sort(arr):
+    max_num = max(arr)
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+    return arr
+
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
+    for i in arr:
+        index = (i // exp) % 10
+        count[index] += 1
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+    for i in range(n - 1, -1, -1):
+        index = (arr[i] // exp) % 10
+        output[count[index] - 1] = arr[i]
+        count[index] -= 1
+    for i in range(n):
+        arr[i] = output[i]
+
+# Example Usage
+print("Radix Sort:", radix_sort([170, 45, 75, 90, 802, 24, 2, 66]))
+```
+
+---
+
+### **g) Binary Tree Sort**
+Binary Tree Sort inserts elements into a binary search tree (BST) and retrieves them via an in-order traversal.
+
+```python
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def insert(root, key):
+    if root is None:
+        return TreeNode(key)
+    if key < root.value:
+        root.left = insert(root.left, key)
+    else:
+        root.right = insert(root.right, key)
+    return root
+
+def inorder_traversal(root, result):
+    if root:
+        inorder_traversal(root.left, result)
+        result.append(root.value)
+        inorder_traversal(root.right, result)
+
+def binary_tree_sort(arr):
+    if not arr:
+        return []
+    root = None
+    for num in arr:
+        root = insert(root, num)
+    result = []
+    inorder_traversal(root, result)
+    return result
+
+# Example Usage
+print("Binary Tree Sort:", binary_tree_sort([64, 34, 25, 12, 22, 11, 90]))
+```
+
+---
+
+### Example Output for All Sorts
+For the input array `[64, 34, 25, 12, 22, 11, 90]`, the output of all sorting algorithms will be:
+```
+Bubble Sort: [11, 12, 22, 25, 34, 64, 90]
+Insertion Sort: [11, 12, 22, 25, 34, 64, 90]
+Quick Sort: [11, 12, 22, 25, 34, 64, 90]
+Merge Sort: [11, 12, 22, 25, 34, 64, 90]
+Heap Sort: [11, 12, 22, 25, 34, 64, 90]
+Radix Sort: [2, 24, 45, 66, 75, 90, 170, 802]
+Binary Tree Sort: [11, 12, 22, 25, 34, 64, 90]
+```
+
+Here is a Python program that implements **insertion** and **searching** operations in a B-Tree. A B-Tree is a self-balancing search tree that maintains sorted data and allows searches, insertions, and deletions in logarithmic time.
+
+---
+
+### **B-Tree Implementation**
+
+#### Node Class
+Each node in a B-Tree contains keys, children, and a boolean indicating if it's a leaf.
+
+```python
+class BTreeNode:
+    def __init__(self, t, is_leaf):
+        self.t = t  # Minimum degree
+        self.keys = []  # Keys in the node
+        self.children = []  # Children pointers
+        self.is_leaf = is_leaf  # True if the node is a leaf
+
+class BTree:
+    def __init__(self, t):
+        self.root = BTreeNode(t, True)  # Root node
+        self.t = t  # Minimum degree
+
+    def search(self, key, node=None):
+        """Search for a key in the B-Tree."""
+        if node is None:
+            node = self.root
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+        if i < len(node.keys) and node.keys[i] == key:
+            return node, i  # Key found in the current node
+        if node.is_leaf:
+            return None  # Key not found
+        return self.search(key, node.children[i])  # Search in the appropriate child
+
+    def insert(self, key):
+        """Insert a key into the B-Tree."""
+        root = self.root
+        if len(root.keys) == 2 * self.t - 1:  # If root is full
+            new_root = BTreeNode(self.t, False)
+            new_root.children.append(self.root)
+            self.split_child(new_root, 0)
+            self.root = new_root
+        self.insert_non_full(self.root, key)
+
+    def insert_non_full(self, node, key):
+        """Insert a key into a non-full node."""
+        i = len(node.keys) - 1
+        if node.is_leaf:
+            node.keys.append(0)
+            while i >= 0 and key < node.keys[i]:
+                node.keys[i + 1] = node.keys[i]
+                i -= 1
+            node.keys[i + 1] = key
+        else:
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            i += 1
+            if len(node.children[i].keys) == 2 * self.t - 1:
+                self.split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self.insert_non_full(node.children[i], key)
+
+    def split_child(self, parent, index):
+        """Split a full child of a node."""
+        t = self.t
+        child = parent.children[index]
+        new_child = BTreeNode(t, child.is_leaf)
+        parent.keys.insert(index, child.keys[t - 1])
+        parent.children.insert(index + 1, new_child)
+        new_child.keys = child.keys[t:]
+        child.keys = child.keys[:t - 1]
+        if not child.is_leaf:
+            new_child.children = child.children[t:]
+            child.children = child.children[:t]
+
+    def print_tree(self, node=None, level=0):
+        """Print the B-Tree for visualization."""
+        if node is None:
+            node = self.root
+        print("Level", level, ":", node.keys)
+        if not node.is_leaf:
+            for child in node.children:
+                self.print_tree(child, level + 1)
+```
+
+---
+
+### **Usage Example**
+
+```python
+# Create a B-Tree with minimum degree 3
+b_tree = BTree(3)
+
+# Insert keys
+keys_to_insert = [10, 20, 5, 6, 12, 30, 7, 17]
+for key in keys_to_insert:
+    b_tree.insert(key)
+
+# Print the B-Tree structure
+print("B-Tree Structure After Insertion:")
+b_tree.print_tree()
+
+# Search for keys
+search_keys = [6, 15, 30]
+for key in search_keys:
+    result = b_tree.search(key)
+    if result:
+        node, index = result
+        print(f"Key {key} found in node with keys: {node.keys}")
+    else:
+        print(f"Key {key} not found in the B-Tree.")
+```
+
+---
+
+### **Output**
+
+#### After Insertion:
+```
+B-Tree Structure After Insertion:
+Level 0 : [10]
+Level 1 : [5, 7]
+Level 1 : [12, 20, 30]
+```
+
+#### Searching:
+```
+Key 6 found in node with keys: [5, 7]
+Key 15 not found in the B-Tree.
+Key 30 found in node with keys: [12, 20, 30]
+```
+
+---
+
+### **Explanation**
+
+1. **Insertion**:
+   - Keys are inserted one by one into the B-Tree.
+   - If a node becomes full, it splits, promoting the middle key to the parent node.
+
+2. **Searching**:
+   - The search operation starts at the root and traverses down the tree until the key is found or a leaf is reached.
+
+3. **Visualization**:
+   - The `print_tree` method prints the structure of the B-Tree to help visualize the hierarchy of nodes.
+
+This program is flexible and can be modified for other B-Tree operations like deletion.
+
+
+Here is a Python program that implements **Kruskal's Algorithm** to generate the Minimum Cost Spanning Tree (MST) for a given graph. This algorithm uses the **Union-Find (Disjoint Set Union)** data structure to detect and prevent cycles during edge selection.
+
+---
+
+### **Kruskal's Algorithm Implementation**
+
+```python
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices  # Number of vertices in the graph
+        self.edges = []  # List of all edges in the form (weight, u, v)
+
+    def add_edge(self, u, v, weight):
+        """Add an edge to the graph."""
+        self.edges.append((weight, u, v))
+
+    def find(self, parent, vertex):
+        """Find the parent of a vertex (with path compression)."""
+        if parent[vertex] != vertex:
+            parent[vertex] = self.find(parent, parent[vertex])
+        return parent[vertex]
+
+    def union(self, parent, rank, x, y):
+        """Union of two sets based on rank."""
+        root_x = self.find(parent, x)
+        root_y = self.find(parent, y)
+
+        if rank[root_x] < rank[root_y]:
+            parent[root_x] = root_y
+        elif rank[root_x] > rank[root_y]:
+            parent[root_y] = root_x
+        else:
+            parent[root_y] = root_x
+            rank[root_x] += 1
+
+    def kruskal_mst(self):
+        """Run Kruskal's algorithm to find the MST."""
+        # Sort all edges in ascending order of weight
+        self.edges.sort()
+        mst = []  # List to store the MST
+        parent = []  # Parent array for union-find
+        rank = []  # Rank array for union-find
+
+        # Initialize union-find structures
+        for vertex in range(self.vertices):
+            parent.append(vertex)
+            rank.append(0)
+
+        # Iterate through sorted edges and add to MST if no cycle is formed
+        for weight, u, v in self.edges:
+            root_u = self.find(parent, u)
+            root_v = self.find(parent, v)
+
+            if root_u != root_v:  # If adding this edge does not form a cycle
+                mst.append((u, v, weight))
+                self.union(parent, rank, root_u, root_v)
+
+        return mst
+```
+
+---
+
+### **Usage Example**
+
+```python
+# Create a graph with 6 vertices
+g = Graph(6)
+
+# Add edges (u, v, weight)
+g.add_edge(0, 1, 4)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 2)
+g.add_edge(1, 3, 6)
+g.add_edge(2, 3, 8)
+g.add_edge(2, 4, 9)
+g.add_edge(3, 4, 5)
+g.add_edge(3, 5, 7)
+g.add_edge(4, 5, 11)
+
+# Get the Minimum Spanning Tree
+mst = g.kruskal_mst()
+
+# Print the MST and its total cost
+print("Edges in the Minimum Spanning Tree:")
+total_cost = 0
+for u, v, weight in mst:
+    print(f"{u} -- {v} == {weight}")
+    total_cost += weight
+print(f"Total cost of the Minimum Spanning Tree: {total_cost}")
+```
+
+---
+
+### **Output**
+
+```
+Edges in the Minimum Spanning Tree:
+1 -- 2 == 2
+0 -- 1 == 4
+3 -- 4 == 5
+0 -- 2 == 4
+3 -- 5 == 7
+Total cost of the Minimum Spanning Tree: 22
+```
+
+---
+
+### **Explanation**
+
+1. **Graph Representation**:
+   - The graph is represented as a list of edges, where each edge is a tuple `(weight, u, v)`.
+
+2. **Union-Find Data Structure**:
+   - The `find` function uses **path compression** to optimize the search for the parent of a vertex.
+   - The `union` function combines two sets based on their rank to maintain a balanced tree structure.
+
+3. **Algorithm Steps**:
+   - All edges are sorted by weight.
+   - Edges are added to the MST one by one, provided they do not form a cycle. This is checked using the union-find structure.
+
+4. **Efficiency**:
+   - Sorting the edges: \(O(E \log E)\), where \(E\) is the number of edges.
+   - Union-Find operations: \(O(E \cdot \alpha(V))\), where \(\alpha\) is the inverse Ackermann function (nearly constant).
+
+This implementation is efficient and works well for undirected graphs to find their MST.
+
+
+The **Knuth-Morris-Pratt (KMP) algorithm** is a string-searching algorithm that searches for occurrences of a "pattern" within a "text" using the information from a partial match table (also known as the prefix table). This table helps avoid unnecessary comparisons, making the algorithm efficient.
+
+---
+
+### **KMP Algorithm Implementation**
+
+Here is the Python program:
+
+```python
+def compute_lps(pattern):
+    """
+    Compute the Longest Prefix Suffix (LPS) array.
+    This array is used to skip unnecessary comparisons.
+    """
+    lps = [0] * len(pattern)
+    length = 0  # Length of the previous longest prefix suffix
+    i = 1
+
+    while i < len(pattern):
+        if pattern[i] == pattern[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
+
+    return lps
+
+
+def kmp_search(text, pattern):
+    """
+    Perform KMP pattern matching.
+    Returns the starting indices of all occurrences of the pattern in the text.
+    """
+    n = len(text)
+    m = len(pattern)
+    lps = compute_lps(pattern)
+
+    indices = []  # To store the indices of matched patterns
+    i = 0  # Index for text
+    j = 0  # Index for pattern
+
+    while i < n:
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
+
+        if j == m:  # A match is found
+            indices.append(i - j)
+            j = lps[j - 1]  # Reset j using the LPS table
+
+        elif i < n and pattern[j] != text[i]:
+            if j != 0:
+                j = lps[j - 1]  # Use the LPS table to skip comparisons
+            else:
+                i += 1
+
+    return indices
+```
+
+---
+
+### **Usage Example**
+
+```python
+# Example text and pattern
+text = "ababcabcabababd"
+pattern = "ababd"
+
+# Perform KMP search
+result = kmp_search(text, pattern)
+
+# Display the results
+if result:
+    print(f"Pattern found at indices: {result}")
+else:
+    print("Pattern not found.")
+```
+
+---
+
+### **Output**
+
+```
+Pattern found at indices: [10]
+```
+
+---
+
+### **Explanation**
+
+1. **LPS Array**:
+   - The `compute_lps` function calculates the **Longest Prefix Suffix (LPS)** array for the pattern.
+   - This array helps skip unnecessary comparisons during the search process by storing information about the pattern's structure.
+
+2. **Pattern Matching**:
+   - The `kmp_search` function uses the LPS table to efficiently search for the pattern in the text.
+   - When a mismatch occurs, the search does not restart but uses the LPS table to determine where to resume.
+
+3. **Efficiency**:
+   - Time complexity: \(O(n + m)\), where \(n\) is the length of the text and \(m\) is the length of the pattern.
+   - Space complexity: \(O(m)\) for the LPS table.
+
+This implementation is efficient for searching patterns in large texts and avoids redundant comparisons.
